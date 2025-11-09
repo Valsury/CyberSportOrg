@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { Users, Shield, Trophy, Gamepad2 } from "lucide-react"
+import { Users, Shield, Trophy, Gamepad2, UserCircle } from "lucide-react"
 import { AnimatedSection } from "@/components/animated-section"
 import { AnimatedHoverCard } from "@/components/animated-hover-card"
 
@@ -17,6 +17,13 @@ export default async function DashboardPage() {
       icon: Users,
       href: "/dashboard/teams",
       color: "from-blue-500 to-cyan-500",
+    },
+    {
+      title: "Игроки",
+      description: "Управление игроками",
+      icon: UserCircle,
+      href: "/dashboard/players",
+      color: "from-purple-500 to-pink-500",
     },
     {
       title: "Турниры",
