@@ -65,7 +65,7 @@ export default async function TeamsPage() {
 
       {teams.length === 0 ? (
         <AnimatedSection>
-          <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20">
+          <Card className="bg-card/80 backdrop-blur-sm border-red-500/20">
             <CardContent className="py-12 text-center">
               <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">Нет команд</h3>
@@ -79,7 +79,7 @@ export default async function TeamsPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {teams.map((team, index) => (
             <AnimatedCard key={team.id} delay={index * 0.1}>
-              <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20 hover:border-purple-500/40 transition-all">
+              <Card className="bg-card/80 backdrop-blur-sm border-red-500/20 hover:border-red-500/40 transition-all">
                 <CardHeader>
                   <div className="flex items-start justify-between mb-4">
                     <div className={`w-16 h-16 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center`}>
@@ -138,7 +138,7 @@ export default async function TeamsPage() {
                                 className="rounded-full"
                               />
                             ) : (
-                              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
+                              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center text-white text-xs font-bold">
                                 {(member.user.name || member.user.email || "U")[0].toUpperCase()}
                               </div>
                             )}

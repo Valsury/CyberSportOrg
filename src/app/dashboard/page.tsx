@@ -23,14 +23,14 @@ export default async function DashboardPage() {
       description: "Управление игроками",
       icon: UserCircle,
       href: "/dashboard/players",
-      color: "from-purple-500 to-pink-500",
+      color: "from-red-500 to-red-600",
     },
     {
       title: "Менеджеры",
       description: "Управление менеджерами",
       icon: Briefcase,
       href: "/dashboard/managers",
-      color: "from-indigo-500 to-purple-500",
+      color: "from-red-600 to-red-700",
     },
     {
       title: "Турниры",
@@ -54,7 +54,7 @@ export default async function DashboardPage() {
       description: "Управление системой",
       icon: Shield,
       href: "/admin",
-      color: "from-purple-500 to-pink-500",
+      color: "from-red-500 to-red-600",
     })
   }
 
@@ -74,7 +74,7 @@ export default async function DashboardPage() {
           const Icon = card.icon
           return (
             <AnimatedHoverCard key={card.href} delay={index * 0.1}>
-              <Card className="border-2 border-purple-500/20 hover:border-purple-500/40 transition-all cursor-pointer bg-card/80 backdrop-blur-sm">
+              <Card className="border-2 border-red-500/20 hover:border-red-500/40 transition-all cursor-pointer bg-card/80 backdrop-blur-sm">
                 <Link href={card.href}>
                   <CardHeader>
                     <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${card.color} flex items-center justify-center mb-4`}>

@@ -31,7 +31,7 @@ export default async function GamesPage() {
       name: "Valorant",
       description: "Тактический шутер от Riot Games",
       icon: "🔫",
-      color: "from-purple-500 to-pink-500",
+      color: "from-red-500 to-red-600",
       playersPerTeam: 5,
     },
     {
@@ -72,7 +72,7 @@ export default async function GamesPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {games.map((game, index) => (
           <AnimatedCard key={game.id} delay={index * 0.1}>
-            <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20 hover:border-purple-500/40 transition-all">
+            <Card className="bg-card/80 backdrop-blur-sm border-red-500/20 hover:border-red-500/40 transition-all">
               <CardHeader>
                 <div className={`w-16 h-16 rounded-lg bg-gradient-to-r ${game.color} flex items-center justify-center mb-4 text-3xl`}>
                   {game.icon}

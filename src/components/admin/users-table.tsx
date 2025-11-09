@@ -163,12 +163,12 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
       <div className="flex justify-end">
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-gradient-to-r from-purple-600 to-pink-600">
+            <Button className="bg-gradient-to-r from-red-600 to-red-700">
               <UserPlus className="mr-2 h-4 w-4" />
               Создать пользователя
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-card border-purple-500/20">
+          <DialogContent className="bg-card border-red-500/20">
             <DialogHeader>
               <DialogTitle className="text-white">Создать пользователя</DialogTitle>
               <DialogDescription>
@@ -240,7 +240,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
               <Button
                 onClick={handleCreate}
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600"
+                className="w-full bg-gradient-to-r from-red-600 to-red-700"
               >
                 {loading ? "Создание..." : "Создать"}
               </Button>
@@ -249,7 +249,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
         </Dialog>
       </div>
 
-      <div className="rounded-md border border-purple-500/20">
+      <div className="rounded-md border border-red-500/20">
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
@@ -269,7 +269,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="border-b border-purple-500/10 hover:bg-purple-500/5 transition-colors"
+                className="border-b border-red-500/10 hover:bg-red-500/5 transition-colors"
               >
                 <TableCell className="text-white">{user.email}</TableCell>
                 <TableCell className="text-white">{user.name || "-"}</TableCell>
@@ -278,7 +278,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-semibold ${
                       user.role === "ADMIN"
-                        ? "bg-purple-500/20 text-purple-300"
+                        ? "bg-red-500/20 text-red-300"
                         : user.role === "MANAGER"
                         ? "bg-blue-500/20 text-blue-300"
                         : "bg-green-500/20 text-green-300"

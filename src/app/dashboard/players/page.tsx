@@ -273,7 +273,7 @@ export default function PlayersPage() {
       </AnimatedSection>
 
       <AnimatedSection delay={0.1}>
-        <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20">
+        <Card className="bg-card/80 backdrop-blur-sm border-red-500/20">
           <CardContent className="p-0">
             <Table>
               <TableHeader>
@@ -308,7 +308,7 @@ export default function PlayersPage() {
                                 className="rounded-full"
                               />
                             ) : (
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold">
+                              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center text-white text-sm font-bold">
                                 {(player.name || player.email || "U")[0].toUpperCase()}
                               </div>
                             )}

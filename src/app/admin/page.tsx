@@ -51,7 +51,7 @@ export default async function AdminPage() {
 
       <div className="grid gap-4 md:grid-cols-4">
         <AnimatedCard delay={0.1} scale>
-          <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20">
+          <Card className="bg-card/80 backdrop-blur-sm border-red-500/20">
             <CardHeader className="pb-2">
               <CardDescription>Всего пользователей</CardDescription>
               <CardTitle className="text-3xl">{stats.total}</CardTitle>
@@ -59,15 +59,15 @@ export default async function AdminPage() {
           </Card>
         </AnimatedCard>
         <AnimatedCard delay={0.2} scale>
-          <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20">
+          <Card className="bg-card/80 backdrop-blur-sm border-red-500/20">
             <CardHeader className="pb-2">
               <CardDescription>Администраторы</CardDescription>
-              <CardTitle className="text-3xl text-purple-400">{stats.admins}</CardTitle>
+              <CardTitle className="text-3xl text-red-400">{stats.admins}</CardTitle>
             </CardHeader>
           </Card>
         </AnimatedCard>
         <AnimatedCard delay={0.3} scale>
-          <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20">
+          <Card className="bg-card/80 backdrop-blur-sm border-red-500/20">
             <CardHeader className="pb-2">
               <CardDescription>Менеджеры</CardDescription>
               <CardTitle className="text-3xl text-blue-400">{stats.managers}</CardTitle>
@@ -75,7 +75,7 @@ export default async function AdminPage() {
           </Card>
         </AnimatedCard>
         <AnimatedCard delay={0.4} scale>
-          <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20">
+          <Card className="bg-card/80 backdrop-blur-sm border-red-500/20">
             <CardHeader className="pb-2">
               <CardDescription>Игроки</CardDescription>
               <CardTitle className="text-3xl text-green-400">{stats.players}</CardTitle>

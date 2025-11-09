@@ -196,7 +196,7 @@ export default function TournamentsPage() {
       case "ONGOING":
         return "bg-green-500/20 text-green-400"
       case "COMPLETED":
-        return "bg-purple-500/20 text-purple-400"
+        return "bg-red-500/20 text-red-400"
       case "CANCELLED":
         return "bg-red-500/20 text-red-400"
       default:
@@ -251,7 +251,7 @@ export default function TournamentsPage() {
 
       {tournaments.length === 0 ? (
         <AnimatedSection>
-          <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20">
+          <Card className="bg-card/80 backdrop-blur-sm border-red-500/20">
             <CardContent className="py-12 text-center">
               <Trophy className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">Нет турниров</h3>
@@ -267,7 +267,7 @@ export default function TournamentsPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {tournaments.map((tournament, index) => (
             <AnimatedCard key={tournament.id} delay={index * 0.1}>
-              <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20 hover:border-purple-500/40 transition-all">
+              <Card className="bg-card/80 backdrop-blur-sm border-red-500/20 hover:border-red-500/40 transition-all">
                 <CardHeader>
                   <div className="flex items-start justify-between mb-4">
                     <div className={`w-16 h-16 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-500 flex items-center justify-center`}>

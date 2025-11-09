@@ -108,7 +108,7 @@ export default function SettingsPage() {
       </AnimatedSection>
 
       <AnimatedSection delay={0.1}>
-        <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20">
+        <Card className="bg-card/80 backdrop-blur-sm border-red-500/20">
           <CardHeader>
             <CardTitle className="text-white">Профиль</CardTitle>
             <CardDescription>Информация о вашей учетной записи</CardDescription>
@@ -125,11 +125,11 @@ export default function SettingsPage() {
                       alt={session.user.name || "Avatar"}
                       width={100}
                       height={100}
-                      className="rounded-full object-cover border-2 border-purple-500/50"
+                      className="rounded-full object-cover border-2 border-red-500/50"
                     />
                   </div>
                 ) : (
-                  <div className="w-24 h-24 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white text-2xl font-bold">
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center text-white text-2xl font-bold">
                     {(session.user.name || session.user.email || "U")[0].toUpperCase()}
                   </div>
                 )}
