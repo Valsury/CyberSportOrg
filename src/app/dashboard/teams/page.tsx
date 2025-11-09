@@ -104,17 +104,17 @@ export default async function TeamsPage() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Менеджер:</span>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 min-w-0 flex-1 justify-end">
                         {team.manager.avatar && (
                           <Image
                             src={team.manager.avatar}
                             alt={team.manager.name || ""}
                             width={20}
                             height={20}
-                            className="rounded-full"
+                            className="rounded-full flex-shrink-0"
                           />
                         )}
-                        <span className="text-white">{team.manager.name || team.manager.email}</span>
+                        <span className="text-white text-right break-words">{team.manager.name || team.manager.email}</span>
                       </div>
                     </div>
                     <div className="flex items-center justify-between text-sm">
@@ -126,9 +126,9 @@ export default async function TeamsPage() {
                   {team.members.length > 0 && (
                     <div className="pt-4 border-t border-border">
                       <p className="text-sm font-medium text-muted-foreground mb-3">Игроки:</p>
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         {team.members.map((member) => (
-                          <div key={member.id} className="flex items-center gap-2 text-sm">
+                          <div key={member.id} className="flex items-start gap-3 text-sm">
                             {member.user.avatar ? (
                               <Image
                                 src={member.user.avatar}
@@ -142,10 +142,10 @@ export default async function TeamsPage() {
                                 {(member.user.name || member.user.email || "U")[0].toUpperCase()}
                               </div>
                             )}
-                            <div className="flex-1">
-                              <p className="text-white">{member.user.name || member.user.username || member.user.email}</p>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-white leading-tight break-words">{member.user.name || member.user.username || member.user.email}</p>
                               {member.role && (
-                                <p className="text-xs text-muted-foreground">{member.role}</p>
+                                <p className="text-xs text-muted-foreground mt-1 leading-tight">{member.role}</p>
                               )}
                             </div>
                           </div>
