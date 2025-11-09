@@ -13,29 +13,31 @@ API endpoint для загрузки моковых данных на Render (и
 **URL:** `POST /api/admin/seed-mock-data`
 
 **Требования:**
-- Авторизация: только ADMIN
+- Авторизация: через секретный ключ (INIT_DB_SECRET) ИЛИ сессия ADMIN
 - Метод: POST
 
 ## Как использовать
 
-### Способ 1: Через браузер (с расширением REST Client)
+### Способ 1: Через ReqBin (РЕКОМЕНДУЕТСЯ) ⭐
 
-1. Установите расширение REST Client для браузера (например, Thunder Client для VS Code)
-2. Войдите в систему как администратор
-3. Создайте POST запрос:
-   ```
-   POST https://your-app-name.onrender.com/api/admin/seed-mock-data
-   ```
+1. Откройте https://reqbin.com
+2. Метод: **POST**
+3. URL: `https://your-app-name.onrender.com/api/admin/seed-mock-data`
+   - Замените `your-app-name` на имя вашего сервиса на Render
+4. Вкладка **Headers**:
+   - **Name**: `Authorization`
+   - **Value**: `Bearer ВАШ_СЕКРЕТНЫЙ_КЛЮЧ`
+   - Получите ключ из Render Dashboard → Web Service → Environment → `INIT_DB_SECRET`
+5. Нажмите **Send**
 
 ### Способ 2: Через curl (из терминала)
 
 ```bash
-# Сначала получите сессионную cookie (войдите через браузер и скопируйте cookie)
-# Или используйте API для входа и получите токен
+# Получите INIT_DB_SECRET из Render Dashboard → Web Service → Environment
 
 curl -X POST https://your-app-name.onrender.com/api/admin/seed-mock-data \
   -H "Content-Type: application/json" \
-  -H "Cookie: next-auth.session-token=YOUR_SESSION_TOKEN"
+  -H "Authorization: Bearer ВАШ_INIT_DB_SECRET"
 ```
 
 ### Способ 3: Через Postman/Insomnia
@@ -44,7 +46,7 @@ curl -X POST https://your-app-name.onrender.com/api/admin/seed-mock-data \
 2. Добавьте заголовок `Content-Type: application/json`
 3. Добавьте cookie сессии (скопируйте из браузера после входа)
 
-### Способ 4: Через браузер (JavaScript Console)
+### Способ 3: Через браузер (JavaScript Console) - только если вы ADMIN
 
 Откройте консоль браузера на странице приложения (после входа как админ) и выполните:
 
@@ -54,17 +56,28 @@ fetch('/api/admin/seed-mock-data', {
   headers: {
     'Content-Type': 'application/json',
   },
+  credentials: 'include', // Важно для передачи cookies
 })
   .then(res => res.json())
   .then(data => {
     console.log('Результат:', data);
-    alert('Моковые данные загружены! Проверьте консоль для деталей.');
+    if (data.success) {
+      alert('✅ Моковые данные загружены!\n\n' + 
+            `Игроков: ${data.stats.players}\n` +
+            `Менеджеров: ${data.stats.managers}\n` +
+            `Команд: ${data.stats.teams}\n` +
+            `Турниров: ${data.stats.tournaments}`);
+    } else {
+      alert('❌ Ошибка: ' + (data.error || 'Неизвестная ошибка'));
+    }
   })
   .catch(error => {
     console.error('Ошибка:', error);
     alert('Ошибка при загрузке данных');
   });
 ```
+
+**Примечание:** Если этот способ не работает, используйте Способ 1 с секретным ключом.
 
 ## Ответ
 

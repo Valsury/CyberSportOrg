@@ -144,11 +144,28 @@ const mockTournaments = [
 
 export async function POST(req: NextRequest) {
   try {
-    // Проверка авторизации - только ADMIN
-    const session = await getServerSession(authOptions)
-    if (!session || session.user.role !== "ADMIN") {
+    // Проверка авторизации - через секретный ключ или сессию ADMIN
+    const authHeader = req.headers.get("authorization")
+    const initSecret = process.env.INIT_DB_SECRET || "change-this-secret-key"
+    
+    // Проверяем секретный ключ (приоритет) или сессию ADMIN
+    let isAuthorized = false
+    
+    if (authHeader && authHeader === `Bearer ${initSecret}`) {
+      isAuthorized = true
+    } else {
+      const session = await getServerSession(authOptions)
+      if (session && session.user.role === "ADMIN") {
+        isAuthorized = true
+      }
+    }
+    
+    if (!isAuthorized) {
       return NextResponse.json(
-        { error: "Unauthorized. Admin access required." },
+        { 
+          error: "Unauthorized. Admin access required.",
+          hint: "Use Authorization header with Bearer token (INIT_DB_SECRET) or login as ADMIN"
+        },
         { status: 401 }
       )
     }
