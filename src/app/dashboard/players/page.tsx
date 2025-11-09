@@ -447,14 +447,14 @@ export default function PlayersPage() {
               <div className="space-y-2">
                 <Label htmlFor="teamId">Команда</Label>
                 <Select
-                  value={formData.teamId}
-                  onValueChange={(value) => setFormData({ ...formData, teamId: value })}
+                  value={formData.teamId || "none"}
+                  onValueChange={(value) => setFormData({ ...formData, teamId: value === "none" ? "" : value })}
                 >
                   <SelectTrigger className="bg-background/50">
                     <SelectValue placeholder="Выберите команду" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Нет команды</SelectItem>
+                    <SelectItem value="none">Нет команды</SelectItem>
                     {teams.map((team) => (
                       <SelectItem key={team.id} value={team.id}>
                         {team.name} (@{team.tag})
