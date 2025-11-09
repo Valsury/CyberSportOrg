@@ -27,14 +27,14 @@ export default function Navbar() {
       animate={{ y: 0 }}
       className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
     >
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
         <Link href="/dashboard" className="flex items-center space-x-2">
           <motion.div
             whileHover={{ rotate: 360 }}
             transition={{ duration: 0.5 }}
             className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
           >
-            CyberSportOrg
+            Afina
           </motion.div>
         </Link>
 

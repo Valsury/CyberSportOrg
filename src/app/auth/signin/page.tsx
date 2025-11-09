@@ -52,7 +52,7 @@ export default function SignInPage() {
         <Card className="border-2 border-purple-500/20 shadow-2xl backdrop-blur-sm bg-card/80">
           <CardHeader className="space-y-1">
             <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              CyberSportOrg
+              Afina
             </CardTitle>
             <CardDescription className="text-center">
               Войдите в свою учетную запись

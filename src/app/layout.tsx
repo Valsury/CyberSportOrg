@@ -6,8 +6,8 @@ import AuthProvider from "@/components/providers/session-provider";
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
 
 export const metadata: Metadata = {
-  title: "CyberSportOrg",
-  description: "CyberSport Organization Platform",
+  title: "Afina",
+  description: "Afina - Киберспортивная организация",
 };
 
 export default function RootLayout({
