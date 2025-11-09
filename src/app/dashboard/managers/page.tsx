@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -32,7 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { AnimatedSection } from "@/components/animated-section"
-import { UserPlus, Edit, Trash2, Loader2 } from "lucide-react"
+import { UserPlus, Edit, Trash2, Loader2, Camera } from "lucide-react"
 import Image from "next/image"
 
 interface Team {
@@ -72,6 +72,9 @@ export default function ManagersPage() {
     teamIds: [] as string[],
   })
   const [submitting, setSubmitting] = useState(false)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const canManage = session?.user.role === "ADMIN"
 
@@ -119,6 +122,7 @@ export default function ManagersPage() {
       avatar: "",
       teamIds: [],
     })
+    setAvatarPreview(null)
     setIsDialogOpen(true)
   }
 
@@ -133,12 +137,55 @@ export default function ManagersPage() {
       avatar: manager.avatar || "",
       teamIds: manager.managedTeams.map((t) => t.id),
     })
+    setAvatarPreview(manager.avatar || null)
     setIsDialogOpen(true)
   }
 
   const handleOpenDelete = (manager: Manager) => {
     setDeletingManager(manager)
     setIsDeleteDialogOpen(true)
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Проверка типа файла
+    if (!file.type.startsWith("image/")) {
+      alert("Пожалуйста, выберите изображение")
+      return
+    }
+
+    // Проверка размера (макс 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Размер файла не должен превышать 5MB")
+      return
+    }
+
+    setUploadingAvatar(true)
+
+    try {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        const base64String = reader.result as string
+        setFormData({ ...formData, avatar: base64String })
+        setAvatarPreview(base64String)
+        setUploadingAvatar(false)
+      }
+      reader.readAsDataURL(file)
+    } catch (error) {
+      console.error("Error reading file:", error)
+      alert("Ошибка при чтении файла")
+      setUploadingAvatar(false)
+    }
+  }
+
+  const handleDeleteAvatar = () => {
+    setFormData({ ...formData, avatar: "" })
+    setAvatarPreview(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -180,7 +227,24 @@ export default function ManagersPage() {
       })
 
       if (res.ok) {
+        // Если редактируем и есть аватар, обновляем его через отдельный endpoint
+        if (editingManager && formData.avatar) {
+          await fetch(`/api/users/${editingManager.id}/avatar`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ avatar: formData.avatar }),
+          })
+        } else if (editingManager && !formData.avatar && !avatarPreview) {
+          // Удаляем аватар, если он был удален
+          await fetch(`/api/users/${editingManager.id}/avatar`, {
+            method: "DELETE",
+          })
+        }
+
         setIsDialogOpen(false)
+        setAvatarPreview(null)
         router.refresh()
         fetchManagers()
       } else {
@@ -429,15 +493,81 @@ export default function ManagersPage() {
                 rows={3}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="avatar">URL аватара</Label>
-              <Input
-                id="avatar"
-                value={formData.avatar}
-                onChange={(e) => setFormData({ ...formData, avatar: e.target.value })}
-                className="bg-background/50"
-                placeholder="https://..."
-              />
+            <div className="space-y-4">
+              <Label>Фото профиля</Label>
+              <div className="flex items-center gap-4">
+                {avatarPreview ? (
+                  <div className="relative">
+                    <Image
+                      src={avatarPreview}
+                      alt="Preview"
+                      width={100}
+                      height={100}
+                      className="rounded-full object-cover border-2 border-red-500/50"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center text-white text-2xl font-bold">
+                    {(formData.name || formData.email || "U")[0].toUpperCase()}
+                  </div>
+                )}
+                <div className="flex flex-col gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadingAvatar || submitting}
+                  >
+                    {uploadingAvatar ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Загрузка...
+                      </>
+                    ) : (
+                      <>
+                        <Camera className="mr-2 h-4 w-4" />
+                        {avatarPreview ? "Изменить фото" : "Загрузить фото"}
+                      </>
+                    )}
+                  </Button>
+                  {avatarPreview && (
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={handleDeleteAvatar}
+                      disabled={uploadingAvatar || submitting}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Удалить
+                    </Button>
+                  )}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="avatar-url">Или введите URL аватара</Label>
+                <Input
+                  id="avatar-url"
+                  value={formData.avatar && !formData.avatar.startsWith("data:") ? formData.avatar : ""}
+                  onChange={(e) => {
+                    setFormData({ ...formData, avatar: e.target.value })
+                    setAvatarPreview(e.target.value || null)
+                  }}
+                  className="bg-background/50"
+                  placeholder="https://..."
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Рекомендуемый размер: 200x200px. Максимальный размер файла: 5MB
+              </p>
             </div>
             <div className="space-y-2">
               <Label>Команды</Label>
