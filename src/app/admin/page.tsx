@@ -4,7 +4,8 @@ import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import UsersTable from "@/components/admin/users-table"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { motion } from "framer-motion"
+import { AnimatedSection } from "@/components/animated-section"
+import { AnimatedCard } from "@/components/animated-card"
 
 export default async function AdminPage() {
   const session = await getServerSession(authOptions)
@@ -41,73 +42,49 @@ export default async function AdminPage() {
 
   return (
     <div className="space-y-8 min-h-screen">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <AnimatedSection>
         <h1 className="text-4xl font-bold text-white mb-2">Админ-панель</h1>
         <p className="text-muted-foreground text-lg">
           Управление пользователями и системой
         </p>
-      </motion.div>
+      </AnimatedSection>
 
       <div className="grid gap-4 md:grid-cols-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
+        <AnimatedCard delay={0.1} scale>
           <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20">
             <CardHeader className="pb-2">
               <CardDescription>Всего пользователей</CardDescription>
               <CardTitle className="text-3xl">{stats.total}</CardTitle>
             </CardHeader>
           </Card>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
+        </AnimatedCard>
+        <AnimatedCard delay={0.2} scale>
           <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20">
             <CardHeader className="pb-2">
               <CardDescription>Администраторы</CardDescription>
               <CardTitle className="text-3xl text-purple-400">{stats.admins}</CardTitle>
             </CardHeader>
           </Card>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
+        </AnimatedCard>
+        <AnimatedCard delay={0.3} scale>
           <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20">
             <CardHeader className="pb-2">
               <CardDescription>Менеджеры</CardDescription>
               <CardTitle className="text-3xl text-blue-400">{stats.managers}</CardTitle>
             </CardHeader>
           </Card>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-        >
+        </AnimatedCard>
+        <AnimatedCard delay={0.4} scale>
           <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20">
             <CardHeader className="pb-2">
               <CardDescription>Игроки</CardDescription>
               <CardTitle className="text-3xl text-green-400">{stats.players}</CardTitle>
             </CardHeader>
           </Card>
-        </motion.div>
+        </AnimatedCard>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-      >
+      <AnimatedSection delay={0.5}>
         <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20">
           <CardHeader>
             <CardTitle className="text-white">Управление пользователями</CardTitle>
@@ -119,7 +96,7 @@ export default async function AdminPage() {
             <UsersTable users={users} />
           </CardContent>
         </Card>
-      </motion.div>
+      </AnimatedSection>
     </div>
   )
 }

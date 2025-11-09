@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Users, Shield, Trophy, Gamepad2 } from "lucide-react"
-import { motion } from "framer-motion"
+import { AnimatedSection } from "@/components/animated-section"
+import { AnimatedHoverCard } from "@/components/animated-hover-card"
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions)
@@ -45,30 +46,20 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8 min-h-screen">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <AnimatedSection>
         <h1 className="text-4xl font-bold text-white mb-2">
           Добро пожаловать, {session?.user.name || session?.user.email}!
         </h1>
         <p className="text-muted-foreground text-lg">
           Панель управления киберспортивной организацией
         </p>
-      </motion.div>
+      </AnimatedSection>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {cards.map((card, index) => {
           const Icon = card.icon
           return (
-            <motion.div
-              key={card.href}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ scale: 1.05 }}
-            >
+            <AnimatedHoverCard key={card.href} delay={index * 0.1}>
               <Card className="border-2 border-purple-500/20 hover:border-purple-500/40 transition-all cursor-pointer bg-card/80 backdrop-blur-sm">
                 <Link href={card.href}>
                   <CardHeader>
@@ -80,7 +71,7 @@ export default async function DashboardPage() {
                   </CardHeader>
                 </Link>
               </Card>
-            </motion.div>
+            </AnimatedHoverCard>
           )
         })}
       </div>

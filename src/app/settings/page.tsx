@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { motion } from "framer-motion"
+import { AnimatedSection } from "@/components/animated-section"
 
 export default async function SettingsPage() {
   const session = await getServerSession(authOptions)
@@ -13,22 +13,14 @@ export default async function SettingsPage() {
 
   return (
     <div className="space-y-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <AnimatedSection>
         <h1 className="text-4xl font-bold text-white mb-2">Настройки</h1>
         <p className="text-muted-foreground text-lg">
           Управление вашей учетной записью
         </p>
-      </motion.div>
+      </AnimatedSection>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-      >
+      <AnimatedSection delay={0.1}>
         <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20">
           <CardHeader>
             <CardTitle className="text-white">Профиль</CardTitle>
@@ -52,7 +44,7 @@ export default async function SettingsPage() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </AnimatedSection>
     </div>
   )
 }
