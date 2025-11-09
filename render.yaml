@@ -19,6 +19,8 @@ services:
         value: admin@cybersport.org
       - key: ADMIN_PASSWORD
         sync: false
+      - key: INIT_DB_SECRET
+        generateValue: true
 
 databases:
   - name: cybersportorg-db
