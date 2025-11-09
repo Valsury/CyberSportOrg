@@ -13,6 +13,7 @@
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "db:seed": "tsx src/scripts/init-db.ts",
+    "db:init": "tsx src/scripts/init-production.ts",
     "postinstall": "prisma generate"
   },
   "devDependencies": {
