@@ -74,6 +74,7 @@ export default function ManagersPage() {
   const [submitting, setSubmitting] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+  const [originalAvatar, setOriginalAvatar] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const canManage = session?.user.role === "ADMIN"
@@ -128,16 +129,18 @@ export default function ManagersPage() {
 
   const handleOpenEdit = (manager: Manager) => {
     setEditingManager(manager)
+    const managerAvatar = manager.avatar || ""
     setFormData({
       email: manager.email,
       password: "",
       name: manager.name || "",
       username: manager.username || "",
       bio: manager.bio || "",
-      avatar: manager.avatar || "",
+      avatar: managerAvatar,
       teamIds: manager.managedTeams.map((t) => t.id),
     })
-    setAvatarPreview(manager.avatar || null)
+    setAvatarPreview(managerAvatar || null)
+    setOriginalAvatar(managerAvatar || null)
     setIsDialogOpen(true)
   }
 
@@ -227,17 +230,8 @@ export default function ManagersPage() {
       })
 
       if (res.ok) {
-        // Если редактируем и есть аватар, обновляем его через отдельный endpoint
-        if (editingManager && formData.avatar) {
-          await fetch(`/api/users/${editingManager.id}/avatar`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ avatar: formData.avatar }),
-          })
-        } else if (editingManager && !formData.avatar && !avatarPreview) {
-          // Удаляем аватар, если он был удален
+        // Если редактируем и аватар был удален (был, но теперь пустой)
+        if (editingManager && originalAvatar && !formData.avatar) {
           await fetch(`/api/users/${editingManager.id}/avatar`, {
             method: "DELETE",
           })
@@ -245,6 +239,7 @@ export default function ManagersPage() {
 
         setIsDialogOpen(false)
         setAvatarPreview(null)
+        setOriginalAvatar(null)
         router.refresh()
         fetchManagers()
       } else {

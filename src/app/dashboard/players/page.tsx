@@ -80,6 +80,7 @@ export default function PlayersPage() {
   const [submitting, setSubmitting] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+  const [originalAvatar, setOriginalAvatar] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const canManage = session?.user.role === "ADMIN" || session?.user.role === "MANAGER"
@@ -137,17 +138,19 @@ export default function PlayersPage() {
   const handleOpenEdit = (player: Player) => {
     setEditingPlayer(player)
     const currentTeam = player.teamMembers[0]?.team
+    const playerAvatar = player.avatar || ""
     setFormData({
       email: player.email,
       password: "",
       name: player.name || "",
       username: player.username || "",
       bio: player.bio || "",
-      avatar: player.avatar || "",
+      avatar: playerAvatar,
       teamId: currentTeam?.id || "",
       teamRole: player.teamMembers[0]?.role || "",
     })
-    setAvatarPreview(player.avatar || null)
+    setAvatarPreview(playerAvatar || null)
+    setOriginalAvatar(playerAvatar || null)
     setIsDialogOpen(true)
   }
 
@@ -238,17 +241,8 @@ export default function PlayersPage() {
       })
 
       if (res.ok) {
-        // Если редактируем и есть аватар, обновляем его через отдельный endpoint
-        if (editingPlayer && formData.avatar) {
-          await fetch(`/api/users/${editingPlayer.id}/avatar`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ avatar: formData.avatar }),
-          })
-        } else if (editingPlayer && !formData.avatar && !avatarPreview) {
-          // Удаляем аватар, если он был удален
+        // Если редактируем и аватар был удален (был, но теперь пустой)
+        if (editingPlayer && originalAvatar && !formData.avatar) {
           await fetch(`/api/users/${editingPlayer.id}/avatar`, {
             method: "DELETE",
           })
@@ -256,6 +250,7 @@ export default function PlayersPage() {
 
         setIsDialogOpen(false)
         setAvatarPreview(null)
+        setOriginalAvatar(null)
         router.refresh()
         fetchPlayers()
       } else {
