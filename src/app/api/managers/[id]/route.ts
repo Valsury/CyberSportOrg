@@ -39,23 +39,44 @@ export async function PUT(
 
     // Update team assignments
     if (teamIds !== undefined) {
-      // Remove manager from all teams
-      await prisma.team.updateMany({
-        where: {
-          managerId: id,
-        },
-        data: {
-          managerId: "", // Temporary, will be updated below
-        },
+      // Get current teams managed by this manager
+      const currentTeams = await prisma.team.findMany({
+        where: { managerId: id },
+        select: { id: true },
       })
+      const currentTeamIds = currentTeams.map((t) => t.id)
 
-      // Assign to new teams if specified
-      if (teamIds && Array.isArray(teamIds) && teamIds.length > 0) {
-        // First, we need to find a manager for teams that will be unassigned
-        // For simplicity, we'll just update the specified teams
+      // Teams to remove (in current but not in new)
+      const teamsToRemove = currentTeamIds.filter((tid) => !teamIds.includes(tid))
+
+      // Teams to add (in new but not in current)
+      const teamsToAdd = (teamIds || []).filter((tid: string) => !currentTeamIds.includes(tid))
+
+      // Remove manager from teams
+      if (teamsToRemove.length > 0) {
+        // Find admin user to temporarily assign teams (or first available manager)
+        const adminUser = await prisma.user.findFirst({
+          where: { role: "ADMIN" },
+          select: { id: true },
+        })
+
+        if (adminUser) {
+          await prisma.team.updateMany({
+            where: {
+              id: { in: teamsToRemove },
+            },
+            data: {
+              managerId: adminUser.id, // Temporarily assign to admin
+            },
+          })
+        }
+      }
+
+      // Assign to new teams
+      if (teamsToAdd.length > 0) {
         await prisma.team.updateMany({
           where: {
-            id: { in: teamIds },
+            id: { in: teamsToAdd },
           },
           data: {
             managerId: id,
