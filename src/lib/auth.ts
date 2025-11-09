@@ -47,6 +47,7 @@ export const authOptions: NextAuthOptions = {
             email: user.email,
             name: user.name,
             role: user.role,
+            avatar: user.avatar,
           }
         } catch (error) {
           console.error("Auth error:", error)
@@ -63,12 +64,23 @@ export const authOptions: NextAuthOptions = {
     signIn: "/auth/signin",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.role = (user as any).role
         token.id = user.id
         token.email = user.email
         token.name = user.name
+        token.avatar = (user as any).avatar
+      }
+      // Обновляем avatar при обновлении сессии
+      if (trigger === "update" && token.id) {
+        const updatedUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { avatar: true },
+        })
+        if (updatedUser) {
+          token.avatar = updatedUser.avatar
+        }
       }
       return token
     },
@@ -78,6 +90,7 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as Role
         session.user.email = token.email as string
         session.user.name = token.name as string | null
+        session.user.avatar = token.avatar as string | null
       }
       return session
     },

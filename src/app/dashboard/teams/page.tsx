@@ -4,9 +4,10 @@ import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AnimatedSection } from "@/components/animated-section"
 import { AnimatedCard } from "@/components/animated-card"
-import { Users, UserPlus, Trophy } from "lucide-react"
+import { Users, UserPlus } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 export default async function TeamsPage() {
   const session = await getServerSession(authOptions)
@@ -15,16 +16,22 @@ export default async function TeamsPage() {
     include: {
       manager: {
         select: {
+          id: true,
           name: true,
           email: true,
+          avatar: true,
         },
       },
       members: {
         include: {
           user: {
             select: {
+              id: true,
               name: true,
               email: true,
+              avatar: true,
+              username: true,
+              role: true,
             },
           },
         },
@@ -97,13 +104,55 @@ export default async function TeamsPage() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Менеджер:</span>
-                      <span className="text-white">{team.manager.name || team.manager.email}</span>
+                      <div className="flex items-center gap-2">
+                        {team.manager.avatar && (
+                          <Image
+                            src={team.manager.avatar}
+                            alt={team.manager.name || ""}
+                            width={20}
+                            height={20}
+                            className="rounded-full"
+                          />
+                        )}
+                        <span className="text-white">{team.manager.name || team.manager.email}</span>
+                      </div>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Участников:</span>
                       <span className="text-white">{team.members.length}</span>
                     </div>
                   </div>
+                  
+                  {team.members.length > 0 && (
+                    <div className="pt-4 border-t border-border">
+                      <p className="text-sm font-medium text-muted-foreground mb-3">Игроки:</p>
+                      <div className="space-y-2">
+                        {team.members.map((member) => (
+                          <div key={member.id} className="flex items-center gap-2 text-sm">
+                            {member.user.avatar ? (
+                              <Image
+                                src={member.user.avatar}
+                                alt={member.user.name || ""}
+                                width={32}
+                                height={32}
+                                className="rounded-full"
+                              />
+                            ) : (
+                              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
+                                {(member.user.name || member.user.email || "U")[0].toUpperCase()}
+                              </div>
+                            )}
+                            <div className="flex-1">
+                              <p className="text-white">{member.user.name || member.user.username || member.user.email}</p>
+                              {member.role && (
+                                <p className="text-xs text-muted-foreground">{member.role}</p>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </AnimatedCard>
@@ -113,4 +162,3 @@ export default async function TeamsPage() {
     </div>
   )
 }
-
