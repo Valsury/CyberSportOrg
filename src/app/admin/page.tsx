@@ -6,6 +6,7 @@ import UsersTable from "@/components/admin/users-table"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AnimatedSection } from "@/components/animated-section"
 import { AnimatedCard } from "@/components/animated-card"
+import ClearDataButton from "@/components/admin/clear-data-button"
 
 export default async function AdminPage() {
   const session = await getServerSession(authOptions)
@@ -85,6 +86,20 @@ export default async function AdminPage() {
       </div>
 
       <AnimatedSection delay={0.5}>
+        <Card className="bg-card/80 backdrop-blur-sm border-red-500/20">
+          <CardHeader>
+            <CardTitle className="text-white">Очистка данных</CardTitle>
+            <CardDescription>
+              Удалить все данные из базы данных (кроме текущего администратора)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ClearDataButton />
+          </CardContent>
+        </Card>
+      </AnimatedSection>
+
+      <AnimatedSection delay={0.6}>
         <Card className="bg-card/80 backdrop-blur-sm border-purple-500/20">
           <CardHeader>
             <CardTitle className="text-white">Управление пользователями</CardTitle>
