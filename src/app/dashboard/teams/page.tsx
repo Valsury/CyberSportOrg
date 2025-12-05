@@ -20,6 +20,7 @@ export default async function TeamsPage() {
           name: true,
           email: true,
           avatar: true,
+          username: true,
         },
       },
       members: {
@@ -31,7 +32,6 @@ export default async function TeamsPage() {
               email: true,
               avatar: true,
               username: true,
-              role: true,
             },
           },
         },
