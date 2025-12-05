@@ -368,11 +368,8 @@ export default function ManagersPage() {
                           )}
                           <div>
                             <p className="text-white font-medium">
-                              {manager.name || manager.username || manager.email}
+                              {manager.username ? `@${manager.username}` : (manager.name || manager.email)}
                             </p>
-                            {manager.username && (
-                              <p className="text-xs text-muted-foreground">@{manager.username}</p>
-                            )}
                           </div>
                         </div>
                       </TableCell>
@@ -492,13 +489,15 @@ export default function ManagersPage() {
               <Label>Фото профиля</Label>
               <div className="flex items-center gap-4">
                 {avatarPreview ? (
-                  <div className="relative">
+                  <div className="relative w-24 h-24">
                     <Image
                       src={avatarPreview}
                       alt="Preview"
                       width={100}
                       height={100}
-                      className="rounded-full object-cover border-2 border-red-500/50"
+                      className="rounded-full object-cover border-2 border-red-500/50 w-full h-full"
+                      title=""
+                      unoptimized
                     />
                   </div>
                 ) : (

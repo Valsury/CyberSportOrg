@@ -114,7 +114,7 @@ export default async function TeamsPage() {
                             className="rounded-full flex-shrink-0"
                           />
                         )}
-                        <span className="text-white text-right break-words">{team.manager.name || team.manager.email}</span>
+                        <span className="text-white text-right break-words">{team.manager.username ? `@${team.manager.username}` : (team.manager.name || team.manager.email)}</span>
                       </div>
                     </div>
                     <div className="flex items-center justify-between text-sm">
@@ -143,7 +143,7 @@ export default async function TeamsPage() {
                               </div>
                             )}
                             <div className="flex-1 min-w-0">
-                              <p className="text-white leading-tight break-words">{member.user.name || member.user.username || member.user.email}</p>
+                              <p className="text-white leading-tight break-words">{member.user.username ? `@${member.user.username}` : (member.user.name || member.user.email)}</p>
                               {member.role && (
                                 <p className="text-xs text-muted-foreground mt-1 leading-tight">{member.role}</p>
                               )}

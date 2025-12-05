@@ -128,3 +128,16 @@ model Tournament {
   
   @@map("tournaments")
 }
+
+model Game {
+  id              String    @id @default(cuid())
+  name            String    @unique
+  description     String?
+  icon            String?
+  color           String?
+  playersPerTeam  Int       @default(5)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@map("games")
+}
