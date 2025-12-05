@@ -119,7 +119,7 @@ export default async function TeamsPage() {
                             className="rounded-full flex-shrink-0"
                           />
                         )}
-                        <span className="text-white text-right break-words">
+                        <span className="text-white text-right break-words truncate block">
                           {formatUserName({
                             username: team.manager.username,
                             name: team.manager.name,
@@ -164,8 +164,8 @@ export default async function TeamsPage() {
                                   {displayInitial}
                                 </div>
                               )}
-                              <div className="flex-1 min-w-0">
-                                <p className="text-white leading-tight break-words">{displayName}</p>
+                              <div className="flex-1 min-w-0 overflow-hidden">
+                                <p className="text-white leading-tight break-words truncate">{displayName}</p>
                                 {member.role && (
                                   <p className="text-xs text-muted-foreground mt-1 leading-tight">{member.role}</p>
                                 )}

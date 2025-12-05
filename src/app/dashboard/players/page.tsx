@@ -428,8 +428,8 @@ export default function PlayersPage() {
                                 {displayInitial}
                               </div>
                             )}
-                            <div>
-                              <p className="text-white font-medium">
+                            <div className="min-w-0 flex-1">
+                              <p className="text-white font-medium truncate">
                                 {displayName}
                               </p>
                             </div>

@@ -4,20 +4,35 @@
 function cleanDuplicateText(text: string): string {
   if (!text) return text
   
+  let cleaned = text.trim()
+  
+  // Проверяем, не является ли строка результатом дублирования самого себя
+  const halfLength = Math.floor(cleaned.length / 2)
+  const firstHalf = cleaned.substring(0, halfLength).trim()
+  const secondHalf = cleaned.substring(halfLength).trim()
+  
+  if (firstHalf.length > 0 && secondHalf.length > 0) {
+    const normalizedFirst = firstHalf.toLowerCase().replace(/['"`@\s]/g, '')
+    const normalizedSecond = secondHalf.toLowerCase().replace(/['"`@\s]/g, '')
+    if (normalizedFirst === normalizedSecond || normalizedSecond.startsWith(normalizedFirst)) {
+      cleaned = firstHalf
+    }
+  }
+  
   // Удаляем дублирование слов
-  const words = text.trim().split(/\s+/)
+  const words = cleaned.split(/\s+/)
   const seen = new Set<string>()
-  const cleaned: string[] = []
+  const result: string[] = []
   
   for (const word of words) {
     const normalized = word.toLowerCase().replace(/['"`@]/g, '').trim()
     if (normalized && !seen.has(normalized)) {
-      cleaned.push(word)
+      result.push(word)
       seen.add(normalized)
     }
   }
   
-  return cleaned.join(' ').trim()
+  return result.join(' ').trim() || text.trim()
 }
 
 /**
