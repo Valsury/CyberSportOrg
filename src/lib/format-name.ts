@@ -1,38 +1,44 @@
 /**
- * Очищает строку от дублирования
+ * Очищает строку от дублирования - более агрессивная версия
  */
 function cleanDuplicateText(text: string): string {
   if (!text) return text
   
   let cleaned = text.trim()
   
+  // Убираем все @ в начале
+  cleaned = cleaned.replace(/^@+/g, '')
+  
   // Проверяем, не является ли строка результатом дублирования самого себя
   const halfLength = Math.floor(cleaned.length / 2)
-  const firstHalf = cleaned.substring(0, halfLength).trim()
-  const secondHalf = cleaned.substring(halfLength).trim()
-  
-  if (firstHalf.length > 0 && secondHalf.length > 0) {
-    const normalizedFirst = firstHalf.toLowerCase().replace(/['"`@\s]/g, '')
-    const normalizedSecond = secondHalf.toLowerCase().replace(/['"`@\s]/g, '')
-    if (normalizedFirst === normalizedSecond || normalizedSecond.startsWith(normalizedFirst)) {
-      cleaned = firstHalf
+  if (halfLength > 0) {
+    const firstHalf = cleaned.substring(0, halfLength).trim()
+    const secondHalf = cleaned.substring(halfLength).trim()
+    
+    if (firstHalf.length > 0 && secondHalf.length > 0) {
+      const normalizedFirst = firstHalf.toLowerCase().replace(/['"`@\s\-_]/g, '')
+      const normalizedSecond = secondHalf.toLowerCase().replace(/['"`@\s\-_]/g, '')
+      if (normalizedFirst === normalizedSecond || normalizedSecond.startsWith(normalizedFirst) || normalizedFirst.startsWith(normalizedSecond)) {
+        cleaned = firstHalf
+      }
     }
   }
   
-  // Удаляем дублирование слов
-  const words = cleaned.split(/\s+/)
+  // Удаляем дублирование слов и символов
+  const words = cleaned.split(/[\s\-_]+/)
   const seen = new Set<string>()
   const result: string[] = []
   
   for (const word of words) {
     const normalized = word.toLowerCase().replace(/['"`@]/g, '').trim()
-    if (normalized && !seen.has(normalized)) {
+    if (normalized && normalized.length > 0 && !seen.has(normalized)) {
       result.push(word)
       seen.add(normalized)
     }
   }
   
-  return result.join(' ').trim() || text.trim()
+  const final = result.join(' ').trim()
+  return final || text.trim().replace(/^@+/g, '')
 }
 
 /**
@@ -47,13 +53,26 @@ export function formatUserName(user: {
 }): string {
   // Показываем ТОЛЬКО username (если есть) или email
   // Никогда не показываем name, чтобы избежать дублирования
-  if (user.username && user.username.trim()) {
+  if (user.username) {
     // Очищаем username от дублирования и лишних символов
-    let cleaned = user.username.trim()
+    let cleaned = String(user.username).trim()
+    
     // Убираем @ если он уже есть
     cleaned = cleaned.replace(/^@+/g, '')
+    
+    // Если пусто после очистки, используем email
+    if (!cleaned) {
+      return user.email
+    }
+    
     // Очищаем от дублирования
     cleaned = cleanDuplicateText(cleaned)
+    
+    // Если после очистки пусто, используем email
+    if (!cleaned) {
+      return user.email
+    }
+    
     return `@${cleaned}`
   }
   

@@ -351,16 +351,10 @@ export default function ManagersPage() {
                   </TableRow>
                 ) : (
                   managers.map((manager) => {
-                    const displayName = formatUserName({
-                      username: manager.username,
-                      name: manager.name,
-                      email: manager.email,
-                    })
-                    const displayInitial = getUserInitial({
-                      username: manager.username,
-                      name: manager.name,
-                      email: manager.email,
-                    })
+                    // Очищаем данные перед форматированием
+                    const cleanUsername = manager.username ? String(manager.username).trim().replace(/^@+/g, '') : null
+                    const displayName = cleanUsername ? `@${cleanUsername}` : manager.email
+                    const displayInitial = cleanUsername ? cleanUsername[0].toUpperCase() : manager.email[0].toUpperCase()
                     return (
                       <TableRow key={manager.id}>
                         <TableCell>
@@ -379,7 +373,7 @@ export default function ManagersPage() {
                               </div>
                             )}
                             <div className="min-w-0 flex-1 overflow-hidden">
-                              <span className="text-white font-medium block truncate">
+                              <span className="text-white font-medium block truncate" suppressHydrationWarning>
                                 {displayName}
                               </span>
                             </div>

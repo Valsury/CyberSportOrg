@@ -401,16 +401,10 @@ export default function PlayersPage() {
                 ) : (
                   players.map((player) => {
                     const currentTeam = player.teamMembers[0]?.team
-                    const displayName = formatUserName({
-                      username: player.username,
-                      name: player.name,
-                      email: player.email,
-                    })
-                    const displayInitial = getUserInitial({
-                      username: player.username,
-                      name: player.name,
-                      email: player.email,
-                    })
+                    // Очищаем данные перед форматированием
+                    const cleanUsername = player.username ? String(player.username).trim().replace(/^@+/g, '') : null
+                    const displayName = cleanUsername ? `@${cleanUsername}` : player.email
+                    const displayInitial = cleanUsername ? cleanUsername[0].toUpperCase() : player.email[0].toUpperCase()
                     return (
                       <TableRow key={player.id}>
                         <TableCell>
@@ -429,7 +423,7 @@ export default function PlayersPage() {
                               </div>
                             )}
                             <div className="min-w-0 flex-1 overflow-hidden">
-                              <span className="text-white font-medium block truncate">
+                              <span className="text-white font-medium block truncate" suppressHydrationWarning>
                                 {displayName}
                               </span>
                             </div>
