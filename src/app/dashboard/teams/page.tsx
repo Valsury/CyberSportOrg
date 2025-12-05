@@ -8,6 +8,7 @@ import { Users, UserPlus } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import { formatUserName, getUserInitial } from "@/lib/format-name"
 
 export default async function TeamsPage() {
   const session = await getServerSession(authOptions)
@@ -108,13 +109,23 @@ export default async function TeamsPage() {
                         {team.manager.avatar && (
                           <Image
                             src={team.manager.avatar}
-                            alt={team.manager.name || ""}
+                            alt={formatUserName({
+                              username: team.manager.username,
+                              name: team.manager.name,
+                              email: team.manager.email,
+                            })}
                             width={20}
                             height={20}
                             className="rounded-full flex-shrink-0"
                           />
                         )}
-                        <span className="text-white text-right break-words">{team.manager.username ? `@${team.manager.username}` : (team.manager.name || team.manager.email)}</span>
+                        <span className="text-white text-right break-words">
+                          {formatUserName({
+                            username: team.manager.username,
+                            name: team.manager.name,
+                            email: team.manager.email,
+                          })}
+                        </span>
                       </div>
                     </div>
                     <div className="flex items-center justify-between text-sm">
@@ -127,29 +138,41 @@ export default async function TeamsPage() {
                     <div className="pt-4 border-t border-border">
                       <p className="text-sm font-medium text-muted-foreground mb-3">Игроки:</p>
                       <div className="space-y-3">
-                        {team.members.map((member) => (
-                          <div key={member.id} className="flex items-start gap-3 text-sm">
-                            {member.user.avatar ? (
-                              <Image
-                                src={member.user.avatar}
-                                alt={member.user.name || ""}
-                                width={32}
-                                height={32}
-                                className="rounded-full"
-                              />
-                            ) : (
-                              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center text-white text-xs font-bold">
-                                {(member.user.name || member.user.email || "U")[0].toUpperCase()}
-                              </div>
-                            )}
-                            <div className="flex-1 min-w-0">
-                              <p className="text-white leading-tight break-words">{member.user.username ? `@${member.user.username}` : (member.user.name || member.user.email)}</p>
-                              {member.role && (
-                                <p className="text-xs text-muted-foreground mt-1 leading-tight">{member.role}</p>
+                        {team.members.map((member) => {
+                          const displayName = formatUserName({
+                            username: member.user.username,
+                            name: member.user.name,
+                            email: member.user.email,
+                          })
+                          const displayInitial = getUserInitial({
+                            username: member.user.username,
+                            name: member.user.name,
+                            email: member.user.email,
+                          })
+                          return (
+                            <div key={member.id} className="flex items-start gap-3 text-sm">
+                              {member.user.avatar ? (
+                                <Image
+                                  src={member.user.avatar}
+                                  alt={displayName}
+                                  width={32}
+                                  height={32}
+                                  className="rounded-full"
+                                />
+                              ) : (
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center text-white text-xs font-bold">
+                                  {displayInitial}
+                                </div>
                               )}
+                              <div className="flex-1 min-w-0">
+                                <p className="text-white leading-tight break-words">{displayName}</p>
+                                {member.role && (
+                                  <p className="text-xs text-muted-foreground mt-1 leading-tight">{member.role}</p>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          )
+                        })}
                       </div>
                     </div>
                   )}

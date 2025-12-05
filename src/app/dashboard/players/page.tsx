@@ -34,6 +34,7 @@ import {
 import { AnimatedSection } from "@/components/animated-section"
 import { UserPlus, Edit, Trash2, Loader2, Camera } from "lucide-react"
 import Image from "next/image"
+import { formatUserName, getUserInitial } from "@/lib/format-name"
 
 interface Team {
   id: string
@@ -400,8 +401,16 @@ export default function PlayersPage() {
                 ) : (
                   players.map((player) => {
                     const currentTeam = player.teamMembers[0]?.team
-                    const displayName = player.username || player.email
-                    const displayInitial = player.username?.[0] || player.email[0] || "U"
+                    const displayName = formatUserName({
+                      username: player.username,
+                      name: player.name,
+                      email: player.email,
+                    })
+                    const displayInitial = getUserInitial({
+                      username: player.username,
+                      name: player.name,
+                      email: player.email,
+                    })
                     return (
                       <TableRow key={player.id}>
                         <TableCell>
@@ -416,12 +425,12 @@ export default function PlayersPage() {
                               />
                             ) : (
                               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center text-white text-sm font-bold">
-                                {displayInitial.toUpperCase()}
+                                {displayInitial}
                               </div>
                             )}
                             <div>
                               <p className="text-white font-medium">
-                                {player.username ? `@${player.username}` : player.email}
+                                {displayName}
                               </p>
                             </div>
                           </div>
@@ -678,7 +687,11 @@ export default function PlayersPage() {
           <DialogHeader>
             <DialogTitle className="text-white">Удалить игрока?</DialogTitle>
             <DialogDescription>
-              Вы уверены, что хотите удалить игрока "{deletingPlayer?.name || deletingPlayer?.email}"? Это действие нельзя отменить.
+              Вы уверены, что хотите удалить игрока "{deletingPlayer ? formatUserName({
+                username: deletingPlayer.username,
+                name: deletingPlayer.name,
+                email: deletingPlayer.email,
+              }) : ''}"? Это действие нельзя отменить.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

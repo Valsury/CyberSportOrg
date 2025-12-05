@@ -34,6 +34,7 @@ import {
 import { AnimatedSection } from "@/components/animated-section"
 import { UserPlus, Edit, Trash2, Loader2, Camera } from "lucide-react"
 import Image from "next/image"
+import { formatUserName, getUserInitial } from "@/lib/format-name"
 
 interface Team {
   id: string
@@ -349,30 +350,41 @@ export default function ManagersPage() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  managers.map((manager) => (
-                    <TableRow key={manager.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          {manager.avatar ? (
-                            <Image
-                              src={manager.avatar}
-                              alt={manager.name || ""}
-                              width={40}
-                              height={40}
-                              className="rounded-full"
-                            />
-                          ) : (
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center text-white text-sm font-bold">
-                              {(manager.name || manager.email || "U")[0].toUpperCase()}
+                  managers.map((manager) => {
+                    const displayName = formatUserName({
+                      username: manager.username,
+                      name: manager.name,
+                      email: manager.email,
+                    })
+                    const displayInitial = getUserInitial({
+                      username: manager.username,
+                      name: manager.name,
+                      email: manager.email,
+                    })
+                    return (
+                      <TableRow key={manager.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            {manager.avatar ? (
+                              <Image
+                                src={manager.avatar}
+                                alt={displayName}
+                                width={40}
+                                height={40}
+                                className="rounded-full"
+                              />
+                            ) : (
+                              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center text-white text-sm font-bold">
+                                {displayInitial}
+                              </div>
+                            )}
+                            <div>
+                              <p className="text-white font-medium">
+                                {displayName}
+                              </p>
                             </div>
-                          )}
-                          <div>
-                            <p className="text-white font-medium">
-                              {manager.username ? `@${manager.username}` : (manager.name || manager.email)}
-                            </p>
                           </div>
-                        </div>
-                      </TableCell>
+                        </TableCell>
                       <TableCell className="text-white">{manager.email}</TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
@@ -625,7 +637,11 @@ export default function ManagersPage() {
           <DialogHeader>
             <DialogTitle className="text-white">Удалить менеджера?</DialogTitle>
             <DialogDescription>
-              Вы уверены, что хотите удалить менеджера "{deletingManager?.name || deletingManager?.email}"? 
+              Вы уверены, что хотите удалить менеджера "{deletingManager ? formatUserName({
+                username: deletingManager.username,
+                name: deletingManager.name,
+                email: deletingManager.email,
+              }) : ''}"? 
               {deletingManager && deletingManager.managedTeams.length > 0 && (
                 <span className="block mt-2 text-destructive">
                   Внимание: у менеджера есть назначенные команды. Сначала нужно переназначить команды.
