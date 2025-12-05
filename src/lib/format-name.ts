@@ -37,39 +37,27 @@ function cleanDuplicateText(text: string): string {
 
 /**
  * Универсальная функция для форматирования имени пользователя
- * Всегда возвращает только один вариант: @username, name или email
- * Очищает от дублирования
+ * Всегда возвращает только один вариант: @username или email
+ * НЕ показывает name, чтобы избежать дублирования
  */
 export function formatUserName(user: {
   username?: string | null
   name?: string | null
   email: string
 }): string {
-  // Приоритет: username > name > email
-  if (user.username) {
-    // Очищаем username от дублирования
-    const cleanedUsername = cleanDuplicateText(user.username)
-    return `@${cleanedUsername}`
+  // Показываем ТОЛЬКО username (если есть) или email
+  // Никогда не показываем name, чтобы избежать дублирования
+  if (user.username && user.username.trim()) {
+    // Очищаем username от дублирования и лишних символов
+    let cleaned = user.username.trim()
+    // Убираем @ если он уже есть
+    cleaned = cleaned.replace(/^@+/g, '')
+    // Очищаем от дублирования
+    cleaned = cleanDuplicateText(cleaned)
+    return `@${cleaned}`
   }
-  if (user.name) {
-    // Очищаем name от дублирования и проверяем, не содержит ли он username
-    let cleanedName = cleanDuplicateText(user.name)
-    
-    // Если в name есть username, удаляем его
-    if (user.username) {
-      const usernameLower = user.username.toLowerCase()
-      const nameWords = cleanedName.split(/\s+/)
-      cleanedName = nameWords
-        .filter(word => {
-          const wordLower = word.toLowerCase().replace(/['"`@]/g, '')
-          return wordLower !== usernameLower && !wordLower.includes(usernameLower) && !usernameLower.includes(wordLower)
-        })
-        .join(' ')
-        .trim()
-    }
-    
-    return cleanedName || user.email
-  }
+  
+  // Если username нет - показываем только email
   return user.email
 }
 

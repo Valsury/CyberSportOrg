@@ -378,10 +378,10 @@ export default function ManagersPage() {
                                 {displayInitial}
                               </div>
                             )}
-                            <div className="min-w-0 flex-1">
-                              <p className="text-white font-medium truncate">
+                            <div className="min-w-0 flex-1 overflow-hidden">
+                              <span className="text-white font-medium block truncate">
                                 {displayName}
-                              </p>
+                              </span>
                             </div>
                           </div>
                         </TableCell>
