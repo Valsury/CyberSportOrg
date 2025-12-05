@@ -86,6 +86,49 @@ export default function PlayersPage() {
   const canManage = session?.user.role === "ADMIN" || session?.user.role === "MANAGER"
   const canDelete = session?.user.role === "ADMIN"
 
+  // Функция для очистки дублирования в имени
+  const cleanName = (name: string | null): string | null => {
+    if (!name) return null
+    
+    let trimmed = name.trim()
+    
+    // Проверяем, не является ли имя результатом дублирования самого себя
+    const halfLength = Math.floor(trimmed.length / 2)
+    const firstHalf = trimmed.substring(0, halfLength).trim()
+    const secondHalf = trimmed.substring(halfLength).trim()
+    
+    // Если вторая половина похожа на первую, возвращаем только первую половину
+    if (firstHalf.length > 0 && secondHalf.length > 0) {
+      const normalizedFirst = firstHalf.toLowerCase().replace(/['"`\s]/g, "")
+      const normalizedSecond = secondHalf.toLowerCase().replace(/['"`\s]/g, "")
+      if (normalizedFirst === normalizedSecond || normalizedSecond.startsWith(normalizedFirst)) {
+        trimmed = firstHalf
+      }
+    }
+    
+    // Удаляем дублирование слов (сохраняем только первое вхождение каждого слова)
+    const words = trimmed.split(/\s+/)
+    const cleaned: string[] = []
+    const seen = new Set<string>()
+    
+    for (const word of words) {
+      // Нормализуем слово для сравнения (убираем кавычки и приводим к нижнему регистру)
+      const normalized = word.toLowerCase().replace(/['"`]/g, "").trim()
+      
+      // Пропускаем пустые строки
+      if (!normalized) continue
+      
+      // Добавляем слово только если мы его еще не видели
+      if (!seen.has(normalized)) {
+        cleaned.push(word)
+        seen.add(normalized)
+      }
+    }
+    
+    const result = cleaned.join(" ").trim()
+    return result.length > 0 ? result : null
+  }
+
   useEffect(() => {
     if (canManage) {
       fetchPlayers()
@@ -211,9 +254,12 @@ export default function PlayersPage() {
         : "/api/players"
       const method = editingPlayer ? "PUT" : "POST"
 
+      // Очищаем имя от дублирования перед сохранением
+      const cleanedName = formData.name ? cleanName(formData.name) : null
+      
       const payload: any = {
         email: formData.email,
-        name: formData.name || null,
+        name: cleanedName,
         username: formData.username || null,
         bio: formData.bio || null,
         avatar: formData.avatar || null,
@@ -354,6 +400,8 @@ export default function PlayersPage() {
                 ) : (
                   players.map((player) => {
                     const currentTeam = player.teamMembers[0]?.team
+                    const displayName = player.username || player.email
+                    const displayInitial = player.username?.[0] || player.email[0] || "U"
                     return (
                       <TableRow key={player.id}>
                         <TableCell>
@@ -361,23 +409,20 @@ export default function PlayersPage() {
                             {player.avatar ? (
                               <Image
                                 src={player.avatar}
-                                alt={player.name || ""}
+                                alt={displayName}
                                 width={40}
                                 height={40}
                                 className="rounded-full"
                               />
                             ) : (
                               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center text-white text-sm font-bold">
-                                {(player.name || player.email || "U")[0].toUpperCase()}
+                                {displayInitial.toUpperCase()}
                               </div>
                             )}
                             <div>
                               <p className="text-white font-medium">
-                                {player.name || player.username || player.email}
+                                {player.username ? `@${player.username}` : player.email}
                               </p>
-                              {player.username && (
-                                <p className="text-xs text-muted-foreground">@{player.username}</p>
-                              )}
                             </div>
                           </div>
                         </TableCell>
@@ -503,6 +548,8 @@ export default function PlayersPage() {
                       width={100}
                       height={100}
                       className="rounded-full object-cover border-2 border-red-500/50"
+                      title=""
+                      unoptimized
                     />
                   </div>
                 ) : (
